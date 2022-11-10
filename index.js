@@ -43,10 +43,25 @@ const result = await ordersCollection.insertOne(order)
 res.send(result)
 }),
 app.get('/orders', async(req, res)=>{
-  const query = {}
+  // const decoded = req.decoded
+  // if(decoded.email !== req.query.email){
+  //   res.status(403).send({message: 'unauthorze access'})
+  // }
+  let query = {}
+  if(req.query.email){
+    query = {
+      email: req.query.email
+    }
+  }
   const cursor = ordersCollection.find(query)
   const orders = await cursor.toArray();
   res.send(orders)
+})
+app.delete('/orders/:id', async(req, res)=>{
+  const id =req.params.id;
+  const query ={_id: ObjectId(id)}
+  const cursor = await ordersCollection.deleteOne(query)
+  res.send(cursor)
 })
  }
  finally{
